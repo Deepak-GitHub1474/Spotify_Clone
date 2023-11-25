@@ -47,3 +47,6 @@ functionality of the popular music streaming platform Spotify.
 ### LinkedIn 👇
 [https://www.linkedin.com/in/deepak-chaudhary1474/]
 
+## Checkout Live Netlify Link 👇
+[https://spotifyclonedeveloperstring.netlify.app/signup/signup.html]
+

@@ -345,20 +345,17 @@ audioElement.addEventListener("ended", () => {
 })
 
 
-// Search songs by song title, artist name, album etc...
+// Show hide search box
 sideBarSearch.onclick = () => {
     if (headerSearchDiv.style.visibility === "visible") {
         headerSearchDiv.style.visibility = "hidden";
-        sideBarSearch.classList.add("fa-magnifying-glass");
-        sideBarSearch.classList.remove("fa-brands fa-searchengin");
     }
     else {
         headerSearchDiv.style.visibility = "visible";
-        sideBarSearch.classList.remove("fa-magnifying-glass");
-        sideBarSearch.classList.add("fa-brands fa-searchengin");
     }
 }
 
+// Search songs by song title, artist name, album etc...
 async function searchSong() {
     const searchInput = document.querySelector('.header-search-div input').value.trim();
     if (searchInput !== '') {
