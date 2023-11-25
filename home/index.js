@@ -1,7 +1,8 @@
 let songs = [];
-let songIndex = 0;
+// let songIndex = 0;
+let songIndex = -1;
 let currentlyPlayingIndex = null;
-let isPaused = false;
+// let isPaused = false;
 let isSuffleEnable = false;
 let isRepeatEnable = false;
 let isHomeSong = true;
@@ -47,18 +48,18 @@ let followBtn = document.getElementById("follow-btn");
 
 // Play home song
 playBtnHome.addEventListener("click", () => {
-    if (isHomeSong) {
+    if (audioElement.paused) {
         audioElement.play()
         playBtnHome.textContent = "Pause";
         masterPlayBtn.classList.remove("fa-circle-play");
         masterPlayBtn.classList.add("fa-circle-pause");
-        isHomeSong = false;
+        // isHomeSong = false;
     } else {
         audioElement.pause()
         playBtnHome.textContent = "Play";
         masterPlayBtn.classList.remove("fa-circle-pause");
         masterPlayBtn.classList.add("fa-circle-play");
-        isHomeSong = true;
+        // isHomeSong = true;
     }
 
 })
@@ -178,34 +179,37 @@ function displaySongDetails(index) {
 
 // play/pause song by card's button function
 function playPauseSong(index) {
-    if (index === currentlyPlayingIndex && isPaused) {
+    if (index === currentlyPlayingIndex && audioElement.paused) { //either audioElement.paused or isPaused
         audioElement.play();
-        isPaused = false;
+        // isPaused = false;
         document.querySelectorAll('.cover-play-btn')[index].classList.remove('fa-circle-play');
         document.querySelectorAll('.cover-play-btn')[index].classList.add('fa-circle-pause');
         masterPlayBtn.classList.remove("fa-circle-play");
         masterPlayBtn.classList.add("fa-circle-pause");
         playTitle.textContent = "Pause";
-    } else if (index === currentlyPlayingIndex && !isPaused) {
+        console.log("play");
+    } else if (index === currentlyPlayingIndex && !audioElement.paused) {
         audioElement.pause();
-        isPaused = true;
+        // isPaused = true;
         document.querySelectorAll('.cover-play-btn')[index].classList.remove('fa-circle-pause');
         document.querySelectorAll('.cover-play-btn')[index].classList.add('fa-circle-play');
         masterPlayBtn.classList.remove("fa-circle-pause");
         masterPlayBtn.classList.add("fa-circle-play");
         playTitle.textContent = "Play";
+        console.log("pause");
     } else {
         resetPlayIcons();
         audioElement.src = songs[index].preview;
         audioElement.load();
         audioElement.play();
         currentlyPlayingIndex = index;
-        isPaused = false;
+        // isPaused = false;
         document.querySelectorAll('.cover-play-btn')[index].classList.remove('fa-circle-play');
         document.querySelectorAll('.cover-play-btn')[index].classList.add('fa-circle-pause');
         masterPlayBtn.classList.remove("fa-circle-play");
         masterPlayBtn.classList.add("fa-circle-pause");
         playTitle.textContent = "Pause";
+        console.log("play else");
     }
 }
 
@@ -237,6 +241,7 @@ masterPlayBtn.addEventListener("click", () => {
         songCardsBtn[songIndex].classList.add('fa-circle-pause');
         playTitle.textContent = "Pause";
         playBtnHome.textContent = "Pause";
+        // isPaused = false;
     } else {
         audioElement.pause();
         masterPlayBtn.classList.remove("fa-circle-pause");
@@ -245,6 +250,7 @@ masterPlayBtn.addEventListener("click", () => {
         songCardsBtn[songIndex].classList.remove('fa-circle-pause');
         playTitle.textContent = "Play";
         playBtnHome.textContent = "Play";
+        // isPaused = true;
     }
 });
 
