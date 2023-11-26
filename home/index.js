@@ -1,15 +1,12 @@
 let songs = [];
-// let songIndex = 0;
 let songIndex = -1;
 let currentlyPlayingIndex = null;
-// let isPaused = false;
 let isSuffleEnable = false;
 let isRepeatEnable = false;
-let isHomeSong = true;
-let audioElement = new Audio("https://res.cloudinary.com/dlt4ash36/video/upload/v1700895570/Raatan-Lambiyan_xd4cld.mp3");
+let homeSong = new Audio("https://res.cloudinary.com/dlt4ash36/video/upload/v1700895570/Raatan-Lambiyan_xd4cld.mp3");
+let audioElement = new Audio();
 let playBtnHome = document.getElementById("play-btn-home");
 let masterPlayBtn = document.getElementById("masterPlayBtn");
-let progressBar = document.getElementById("customProgress");
 let progressBarContainer = document.querySelector(".progressbar-container");
 let customProgress = document.getElementById('customProgress');
 let customProgressThumb = document.getElementById('customProgressThumb');
@@ -47,21 +44,36 @@ let followBtn = document.getElementById("follow-btn");
 
 
 // Play home song
-playBtnHome.addEventListener("click", () => {
-    if (audioElement.paused) {
-        audioElement.play()
+function homeSongPlay() {
+
+    if (homeSong.paused) {
+        homeSong.play();
         playBtnHome.textContent = "Pause";
         masterPlayBtn.classList.remove("fa-circle-play");
         masterPlayBtn.classList.add("fa-circle-pause");
-        // isHomeSong = false;
+        masterSongTitle.textContent = "Raataan-Lambiyan";
+        masterSongInfo.textContent = "Tanishk Bagchi, Jubin Nautial, Asees Kaur";
+        masterCover.src = "https://res.cloudinary.com/dlt4ash36/image/upload/v1700793770/play-song_qvjwqd.jpg";
+        playTitle.textContent = "Pause";
     } else {
-        audioElement.pause()
+        homeSong.pause();
         playBtnHome.textContent = "Play";
         masterPlayBtn.classList.remove("fa-circle-pause");
         masterPlayBtn.classList.add("fa-circle-play");
-        // isHomeSong = true;
+        masterSongTitle.textContent = "Raataan-Lambiyan";
+        masterSongInfo.textContent = "Tanishk Bagchi, Jubin Nautial, Asees Kaur";
+        masterCover.src = "https://res.cloudinary.com/dlt4ash36/image/upload/v1700793770/play-song_qvjwqd.jpg";
+        playTitle.textContent = "Play";
     }
 
+    audioElement.pause();
+    resetPlayIcons();
+    audioElement.currentTime = 0;
+    songIndex = -1;
+}
+
+playBtnHome.addEventListener("click", () => {
+    homeSongPlay();
 })
 
 const apiUrl = 'https://api.allorigins.win/raw?url=https://api.deezer.com/search?q=arijitsingh';
@@ -82,15 +94,25 @@ async function fetchMusicData() {
 // Call the function to fetch the music data from Deezer API
 fetchMusicData();
 
-// Progress bar Reset
-function progressBarReset() {
-    progressBar.value = 0;
-}
-
 // Update the custom progress bar with the current song's progress
 function updateCustomProgressBar() {
-    const duration = audioElement.duration || 0;
-    const currentTime = audioElement.currentTime || 0;
+
+    let currentTime = null;
+    let duration = null;
+
+    if (homeSong.paused && audioElement.paused && audioElement.currentTime === 0) {
+        currentTime = homeSong.currentTime;
+        duration = homeSong.duration;
+    } else if (!homeSong.paused) {
+        currentTime = homeSong.currentTime;
+        duration = homeSong.duration;
+    } else if (audioElement.paused) {
+        currentTime = audioElement.currentTime;
+        duration = audioElement.duration;
+    } else if (!audioElement.paused) {
+        currentTime = audioElement.currentTime;
+        duration = audioElement.duration;
+    }
     const progress = (currentTime / duration) * 100;
 
     customProgress.style.width = `${progress}%`;
@@ -101,11 +123,29 @@ function updateCustomProgressBar() {
 document.getElementById('customProgressBar').addEventListener('click', (event) => {
     const progressBarWidth = customProgressBar.clientWidth;
     const clickX = event.clientX - customProgressBar.getBoundingClientRect().left;
-    const duration = audioElement.duration || 0;
+    let duration = null;
+    if (homeSong.paused && audioElement.paused && audioElement.currentTime === 0) {
+        duration = homeSong.duration;
+    } else if (!homeSong.paused) {
+        duration = homeSong.duration;
+    } else if (audioElement.paused) {
+        duration = audioElement.duration;
+    } else if (!audioElement.paused) {
+        duration = audioElement.duration;
+    }
 
     if (duration) {
         const seekTime = (clickX / progressBarWidth) * duration;
-        audioElement.currentTime = seekTime;
+
+        if (homeSong.paused && audioElement.paused && audioElement.currentTime === 0) {
+            homeSong.currentTime = seekTime;
+        } else if (!homeSong.paused) {
+            homeSong.currentTime = seekTime;
+        } else if (audioElement.paused) {
+            audioElement.currentTime = seekTime;
+        } else if (!audioElement.paused) {
+            audioElement.currentTime = seekTime;
+        }
     }
 });
 
@@ -114,21 +154,44 @@ audioElement.addEventListener('timeupdate', () => {
     updateCustomProgressBar();
 });
 
+// Update the custom progress bar while the song is playing
+homeSong.addEventListener('timeupdate', () => {
+    updateCustomProgressBar();
+});
 
-// Reset progressbar when song end
+// Reset progressbar when audioElement song end
 audioElement.addEventListener("ended", () => {
-    progressBar.value = 0;
+    customProgress.value = 0;
+});
+
+// Reset progressbar when homeSong end
+homeSong.addEventListener("ended", () => {
+    customProgress.value = 0;
 });
 
 
-// Time update
-audioElement.addEventListener("timeupdate", () => {
-    let currentTime = audioElement.currentTime;
-    let duration = audioElement.duration;
+// Time update function
+function timeUpdate() {
+    let currentTime = null;
+    let duration = null;
+
+    if (homeSong.paused && audioElement.paused && audioElement.currentTime === 0) {
+        currentTime = homeSong.currentTime;
+        duration = homeSong.duration;
+    } else if (!homeSong.paused) {
+        currentTime = homeSong.currentTime;
+        duration = homeSong.duration;
+    } else if (audioElement.paused) {
+        currentTime = audioElement.currentTime;
+        duration = audioElement.duration;
+    } else if (!audioElement.paused) {
+        currentTime = audioElement.currentTime;
+        duration = audioElement.duration;
+    }
 
     if (duration) {
         let progressValue = (currentTime / duration) * 100;
-        progressBar.value = progressValue;
+        customProgress.value = progressValue;
 
         let progressMinutes = Math.floor(currentTime / 60);
         let progressSeconds = Math.floor(currentTime % 60);
@@ -144,6 +207,16 @@ audioElement.addEventListener("timeupdate", () => {
         }
         musicEnd.textContent = `${durationMinutes}:${durationSeconds}`;
     }
+}
+
+// Call timeUpdate() function by audioElement
+audioElement.addEventListener("timeupdate", () => {
+    timeUpdate();
+});
+
+// Call timeUpdate() function by homeSong
+homeSong.addEventListener("timeupdate", () => {
+    timeUpdate();
 });
 
 
@@ -173,44 +246,43 @@ function displaySongDetails(index) {
     masterSongTitle.textContent = song.title;
     masterSongInfo.textContent = song.artist.name;
     masterCover.src = song.album.cover;
-    progressBar.value = 0;
+    customProgress.value = 0;
 }
 
 
 // play/pause song by card's button function
 function playPauseSong(index) {
-    if (index === currentlyPlayingIndex && audioElement.paused) { //either audioElement.paused or isPaused
+
+    if (index === currentlyPlayingIndex && audioElement.paused) {
         audioElement.play();
-        // isPaused = false;
         document.querySelectorAll('.cover-play-btn')[index].classList.remove('fa-circle-play');
         document.querySelectorAll('.cover-play-btn')[index].classList.add('fa-circle-pause');
         masterPlayBtn.classList.remove("fa-circle-play");
         masterPlayBtn.classList.add("fa-circle-pause");
         playTitle.textContent = "Pause";
-        console.log("play");
     } else if (index === currentlyPlayingIndex && !audioElement.paused) {
         audioElement.pause();
-        // isPaused = true;
         document.querySelectorAll('.cover-play-btn')[index].classList.remove('fa-circle-pause');
         document.querySelectorAll('.cover-play-btn')[index].classList.add('fa-circle-play');
         masterPlayBtn.classList.remove("fa-circle-pause");
         masterPlayBtn.classList.add("fa-circle-play");
         playTitle.textContent = "Play";
-        console.log("pause");
     } else {
         resetPlayIcons();
         audioElement.src = songs[index].preview;
         audioElement.load();
         audioElement.play();
         currentlyPlayingIndex = index;
-        // isPaused = false;
         document.querySelectorAll('.cover-play-btn')[index].classList.remove('fa-circle-play');
         document.querySelectorAll('.cover-play-btn')[index].classList.add('fa-circle-pause');
         masterPlayBtn.classList.remove("fa-circle-play");
         masterPlayBtn.classList.add("fa-circle-pause");
         playTitle.textContent = "Pause";
-        console.log("play else");
     }
+
+    homeSong.pause();
+    homeSong.currentTime = 0;
+    playBtnHome.textContent = "Play";
 }
 
 
@@ -233,25 +305,44 @@ songCardsBtn.forEach((btn, index) => {
 
 // Handle cards play/pause by master play/pause button
 masterPlayBtn.addEventListener("click", () => {
-    if (audioElement.paused || audioElement.currentTime <= 0) {
+    if (homeSong.paused && audioElement.paused && audioElement.currentTime === 0) {
+        homeSong.play();
+        playBtnHome.textContent = "Pause";
+        masterPlayBtn.classList.remove("fa-circle-play");
+        masterPlayBtn.classList.add("fa-circle-pause");
+        masterSongTitle.textContent = "Raataan-Lambiyan";
+        masterSongInfo.textContent = "Tanishk Bagchi, Jubin Nautial, Asees Kaur";
+        masterCover.src = "https://res.cloudinary.com/dlt4ash36/image/upload/v1700793770/play-song_qvjwqd.jpg";
+        playTitle.textContent = "Pause";
+        // audioElement.currentTime = 0;
+    } else if (!homeSong.paused) {
+        homeSong.pause();
+        playBtnHome.textContent = "Play";
+        masterPlayBtn.classList.remove("fa-circle-pause");
+        masterPlayBtn.classList.add("fa-circle-play");
+        masterSongTitle.textContent = "Raataan-Lambiyan";
+        masterSongInfo.textContent = "Tanishk Bagchi, Jubin Nautial, Asees Kaur";
+        masterCover.src = "https://res.cloudinary.com/dlt4ash36/image/upload/v1700793770/play-song_qvjwqd.jpg";
+        playTitle.textContent = "Play";
+        // audioElement.currentTime = 0;
+    } else if (audioElement.paused) {
         audioElement.play();
         masterPlayBtn.classList.remove("fa-circle-play");
         masterPlayBtn.classList.add("fa-circle-pause");
         songCardsBtn[songIndex].classList.remove('fa-circle-play');
         songCardsBtn[songIndex].classList.add('fa-circle-pause');
         playTitle.textContent = "Pause";
-        playBtnHome.textContent = "Pause";
-        // isPaused = false;
-    } else {
+        // homeSong.currentTime = 0;
+    } else if (!audioElement.paused) {
         audioElement.pause();
         masterPlayBtn.classList.remove("fa-circle-pause");
         masterPlayBtn.classList.add("fa-circle-play");
         songCardsBtn[songIndex].classList.add('fa-circle-play');
         songCardsBtn[songIndex].classList.remove('fa-circle-pause');
         playTitle.textContent = "Play";
-        playBtnHome.textContent = "Play";
-        // isPaused = true;
+        // homeSong.currentTime = 0;
     }
+
 });
 
 masterPlayBtn.addEventListener("mouseover", () => {
@@ -263,9 +354,35 @@ masterPlayBtn.addEventListener("mouseout", () => {
 })
 
 
+// Automatic play next song when one song finshed playing
+audioElement.addEventListener("ended", () => {
+    songIndex++;
+
+    if (songIndex > songs.length - 1) {
+        songIndex = 0;
+    }
+    if (!isSuffleEnable) {
+        playPauseSong(songIndex);
+    }
+    displaySongDetails(songIndex);
+});
+
+// Automatic play next song when homeSong finshed playing
+homeSong.addEventListener("ended", () => {
+    songIndex++;
+    if (isRepeatEnable) {
+        homeSongPlay();
+    } else {
+        playPauseSong(0);
+        displaySongDetails(0);
+    }
+    
+});
+
+
 // Next song event listener
 document.getElementById('next').addEventListener('click', () => {
-    progressBar.value = 0;
+    customProgress.value = 0;
 
     if (songIndex >= songs.length - 1) {
         songIndex = 0;
@@ -282,7 +399,7 @@ document.getElementById('next').addEventListener('click', () => {
 
 // Previous song event listener
 document.getElementById('previous').addEventListener('click', () => {
-    progressBar.value = 0;
+    // customProgress.value = 0;
     if (songIndex <= 0) {
         songIndex = songs.length - 1;
     }
@@ -311,18 +428,6 @@ musicRepeat.addEventListener("click", () => {
     }
 });
 
-
-// Automatic play next song when one song finshed playing
-audioElement.addEventListener("ended", () => {
-    songIndex++;
-    if (songIndex > songs.length - 1) {
-        songIndex = 0;
-    }
-    displaySongDetails(songIndex);
-    if (!isSuffleEnable) {
-        playPauseSong(songIndex);
-    }
-});
 
 // Changing shuffle icon
 shuffleMusic.addEventListener("click", () => {
@@ -543,7 +648,7 @@ window.addEventListener("load", () => {
 
     if (userData && userData.username) {
         profileName.textContent = userData.username;
-        profileImage.src = userData.avatar ? userData.avatar: profileImage.src;
+        profileImage.src = userData.avatar ? userData.avatar : profileImage.src;
     } else {
         // profileName.textContent = "username";
         window.open("../signup/signup.html", "_self");
