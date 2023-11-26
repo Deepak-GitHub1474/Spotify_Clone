@@ -29,6 +29,8 @@ functionality of the popular music streaming platform Spotify.
 - Search.
 - User authentication.
 - Form validation.
+- RegExp.
+- conditional styling.
 
 ### Technologies Used
 

@@ -112,9 +112,10 @@ function userSignup() {
     }
 
     // // Email Input Field Validation
-    const emailRegex = /^[a-zA-Z0-9]+[a-zA-Z0-9._]*@[a-zA-Z0-9]+\.(com|in)$/;
+    const emailRegex = /^[a-zA-Z0-9]+[a-zA-Z0-9._]*@[a-zA-Z0-9]+\.(com|in)$/i;
+
     if (emailRegex.test(email.value)) {
-        userInput.email = userEmail;
+        userInput.email = userEmail.toLowerCase();
     } else {
         // alert("Email is not valid");
         validationMessage.textContent = "Email is not valid!";
@@ -140,7 +141,6 @@ function userSignup() {
 // Calling signup function
 signupBtn.onclick = () => {
     const userdata = userSignup();
-    console.log(userdata);
     if (userdata) {
         localStorage.setItem("userData", JSON.stringify(userdata));
         window.location.href = "../login/login.html";

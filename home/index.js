@@ -41,7 +41,7 @@ let profileName = document.querySelector(".profile-name");
 let profileImage = document.querySelector(".profile-image")
 let logOut = document.querySelector("#log-out");
 let followBtn = document.getElementById("follow-btn");
-
+const apiUrl = 'https://api.allorigins.win/raw?url=https://api.deezer.com/search?q=arijitsingh';
 
 // Play home song
 function homeSongPlay() {
@@ -75,8 +75,6 @@ function homeSongPlay() {
 playBtnHome.addEventListener("click", () => {
     homeSongPlay();
 })
-
-const apiUrl = 'https://api.allorigins.win/raw?url=https://api.deezer.com/search?q=arijitsingh';
 
 // Getting songs data from API
 async function fetchMusicData() {
