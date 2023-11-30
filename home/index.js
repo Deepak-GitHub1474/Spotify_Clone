@@ -1,3 +1,7 @@
+const hamberger = document.querySelector(".hamberger");
+const sideBar = document.querySelector(".sidebar");
+const closeBtn = document.querySelector(".hide-sidebar");
+
 let songs = [];
 let songIndex = -1;
 let currentlyPlayingIndex = null;
@@ -13,7 +17,7 @@ let customProgressThumb = document.getElementById('customProgressThumb');
 let customProgressBar = document.getElementById('customProgressBar');
 let musicStart = document.getElementById("musicStart");
 let musicEnd = document.getElementById("musicEnd");
-let sideBarSearch = document.querySelector("#sidebar-search");
+let sideBarSearchIcon = document.querySelector("#sidebar-search");
 let headerSearchDiv = document.querySelector(".header-search-div");
 let masterSongTitle = document.getElementById("masterSongTitle");
 let masterSongInfo = document.getElementById("masterSongInfo");
@@ -28,11 +32,11 @@ let shuffleIndicator = document.getElementById("shuffle-enable-indicator");
 let footerHeartIcon = document.querySelector(".fa-heart");
 let volumeSeekbar = document.querySelector(".volume-seekbar");
 let volumeRange = document.querySelector('.volume-seekbar');
-let repeatMode = document.querySelector(".fa-volume-high");
+let volumeIcon = document.querySelector(".fa-volume-high");
 let mute = document.querySelector(".mute");
 let searchIcon = document.querySelector(".header-search-icon");
 let searchBar = document.getElementById("searchBar");
-let pageNavigateBtn = document.querySelector(".back-forward-btn");
+let pageNavigateBtn = document.querySelector(".back-forward-btn-container");
 let dropdownContainer = document.querySelector(".upgrade-dropdown-container");
 let dropdown = document.querySelector(".dropdown");
 let dropdownInner = document.querySelector(".dropdown-inner");
@@ -343,14 +347,6 @@ masterPlayBtn.addEventListener("click", () => {
 
 });
 
-masterPlayBtn.addEventListener("mouseover", () => {
-    playTitle.style.display = "block";
-})
-
-masterPlayBtn.addEventListener("mouseout", () => {
-    playTitle.style.display = "none";
-})
-
 
 // Automatic play next song when one song finshed playing
 audioElement.addEventListener("ended", () => {
@@ -374,7 +370,7 @@ homeSong.addEventListener("ended", () => {
         playPauseSong(0);
         displaySongDetails(0);
     }
-    
+
 });
 
 
@@ -414,14 +410,14 @@ document.getElementById('previous').addEventListener('click', () => {
 musicRepeat.addEventListener("click", () => {
     if (!isRepeatEnable) {
         repeatIndicator.style.display = "block";
-        audioElement.loop = true;
         musicRepeat.style.color = "#26cc5a";
+        audioElement.loop = true;
         isRepeatEnable = true;
     }
     else {
         repeatIndicator.style.display = "none";
-        audioElement.loop = false;
         musicRepeat.style.color = "#9f9b9b";
+        audioElement.loop = false;
         isRepeatEnable = false;
     }
 });
@@ -453,16 +449,46 @@ audioElement.addEventListener("ended", () => {
 
 })
 
-
-// Show hide search box
-sideBarSearch.onclick = () => {
-    if (headerSearchDiv.style.visibility === "visible") {
-        headerSearchDiv.style.visibility = "hidden";
-    }
-    else {
-        headerSearchDiv.style.visibility = "visible";
-    }
+// Handle header elements
+function handleHeaderEl() {
+    sideBar.classList.toggle("show-sidebar");
+    headerSearchDiv.style.display = "none";
+    pageNavigateBtn.style.display = "block";
+    dropdownContainer.style.display = "flex";
 }
+
+// Show Sidebar
+hamberger.addEventListener("click", function () {
+    handleHeaderEl();
+});
+
+// Hide Sidebar
+closeBtn.addEventListener("click", function () {
+    handleHeaderEl();
+});
+
+// Show hide header search box by sidebar search
+sideBarSearchIcon.addEventListener("click", () => {
+    if (headerSearchDiv.style.display === "block") {
+        handleHeaderEl();
+    } else {
+        sideBar.classList.toggle("show-sidebar");
+        headerSearchDiv.style.display = "block";
+        dropdownContainer.style.display = "none";
+        pageNavigateBtn.style.display = "none";
+    }
+});
+
+
+// Reset Header
+if (window.innerWidth > 450) {
+    window.addEventListener("resize", () => {
+        headerSearchDiv.style.display = "none";
+        pageNavigateBtn.style.display = "block";
+        dropdownContainer.style.display = "flex";
+    });
+}
+
 
 // Search songs by song title, artist name, album etc...
 async function searchSong() {
@@ -476,81 +502,26 @@ async function searchSong() {
     }
 }
 
-// Header Search box control
-headerSearchDiv.addEventListener("click", (e) => {
-    e.stopPropagation(); // Prevent the click event from propagating to the body
-    if (window.innerWidth < 768) {
-        searchBar.style.width = "64vw";
-        searchBar.style.padding = "11px 50px";
-        searchBar.style.borderRadius = "25px";
-        pageNavigateBtn.style.display = "none";
-        dropdownContainer.style.display = "none";
-        headerSearchDiv.style.marginLeft = "0";
-    }
-});
-
-// Add a click event listener to the body or another container
-document.body.addEventListener("click", () => {
-    if (window.innerWidth < 768) {
-        searchBar.style.width = "0";
-        searchBar.style.padding = "14px 25px";
-        searchBar.style.borderRadius = "50%";
-        headerSearchDiv.style.marginLeft = "8rem";
-        pageNavigateBtn.style.display = "block";
-        dropdownContainer.style.display = "block";
-    }
-});
-
-// Prevent clicks inside the search box from closing it
-searchBar.addEventListener("click", (e) => {
-    e.stopPropagation();
-});
-
-if (window.innerWidth < 1200) {
-    window.addEventListener("resize", () => {
-        pageNavigateBtn.style.display = "block";
-        dropdownContainer.style.display = "flex";
-        if (window.innerWidth > 768) {
-            searchBar.style.width = "18rem";
-            searchBar.style.padding = "11px 51px";
-            searchBar.style.borderRadius = "25px";
-            headerSearchDiv.style.marginLeft = "8rem";
-            pageNavigateBtn.style.display = "block";
-            dropdownContainer.style.display = "flex";
-        } else {
-            if (window.innerWidth > 500) {
-                searchBar.style.width = "0";
-                searchBar.style.padding = "14px 25px";
-                searchBar.style.borderRadius = "50%";
-                headerSearchDiv.style.marginLeft = "8rem";
-                pageNavigateBtn.style.display = "block";
-                dropdownContainer.style.display = "flex";
-            }
-        }
-    });
-}
-
-
 // Volume Increase Decrease
 volumeRange.onchange = () => {
     audioElement.volume = volumeRange.value / 100;
 }
 
 // Volume Icon & Mute/Unmute music
-repeatMode.addEventListener("click", () => {
-    if (repeatMode.classList.contains("fa-volume-high")) {
-        repeatMode.classList.add("fa-volume-xmark");
-        repeatMode.classList.remove("fa-volume-high");
+volumeIcon.addEventListener("click", () => {
+    if (volumeIcon.classList.contains("fa-volume-high")) {
+        volumeIcon.classList.add("fa-volume-xmark");
+        volumeIcon.classList.remove("fa-volume-high");
         audioElement.muted = true; // Mute the audio
     } else {
-        repeatMode.classList.add("fa-volume-high");
-        repeatMode.classList.remove("fa-volume-xmark");
+        volumeIcon.classList.add("fa-volume-high");
+        volumeIcon.classList.remove("fa-volume-xmark");
         audioElement.muted = false; // Unmute the audio
     }
 })
 
 // Mute and Unmute message on hover 
-repeatMode.onclick = () => {
+volumeIcon.onclick = () => {
     if (mute.textContent === "Mute") {
         mute.textContent = "Unmute";
         mute.style.display = "block"
@@ -562,12 +533,12 @@ repeatMode.onclick = () => {
 }
 
 // Showing mute unmute pop up on hover
-repeatMode.addEventListener("mouseover", () => {
+volumeIcon.addEventListener("mouseover", () => {
     mute.style.display = "block";
 });
 
 // Hiding mute unmute pop up on mouseout
-repeatMode.addEventListener("mouseout", () => {
+volumeIcon.addEventListener("mouseout", () => {
     setTimeout(function () {
         mute.style.display = "none";
     }, 0.01 * 1000);
@@ -577,33 +548,33 @@ repeatMode.addEventListener("mouseout", () => {
 volumeSeekbar.addEventListener("click", () => {
     console.log(volumeSeekbar);
     if (volumeSeekbar.value < 2) {
-        repeatMode.classList.add("fa-volume-xmark");
-        repeatMode.classList.remove("fa-volume-low")
-        repeatMode.classList.remove("fa-phone-volume");
-        repeatMode.classList.remove("fa-volume-high");
+        volumeIcon.classList.add("fa-volume-xmark");
+        volumeIcon.classList.remove("fa-volume-low")
+        volumeIcon.classList.remove("fa-phone-volume");
+        volumeIcon.classList.remove("fa-volume-high");
         audioElement.muted = true;
     }
     if (volumeSeekbar.value > 2 && volumeSeekbar.value < 30) {
-        repeatMode.classList.remove("fa-volume-xmark");
-        repeatMode.classList.add("fa-volume-low");
-        repeatMode.classList.remove("fa-phone-volume");
-        repeatMode.classList.remove("fa-volume-high");
+        volumeIcon.classList.remove("fa-volume-xmark");
+        volumeIcon.classList.add("fa-volume-low");
+        volumeIcon.classList.remove("fa-phone-volume");
+        volumeIcon.classList.remove("fa-volume-high");
         audioElement.muted = false;
     }
 
     if (volumeSeekbar.value > 30 && volumeSeekbar.value < 80) {
-        repeatMode.classList.remove("fa-volume-xmark");
-        repeatMode.classList.remove("fa-volume-low");
-        repeatMode.classList.add("fa-phone-volume");
-        repeatMode.classList.remove("fa-volume-high");
+        volumeIcon.classList.remove("fa-volume-xmark");
+        volumeIcon.classList.remove("fa-volume-low");
+        volumeIcon.classList.add("fa-phone-volume");
+        volumeIcon.classList.remove("fa-volume-high");
         audioElement.muted = false;
     }
 
     if (volumeSeekbar.value > 80) {
-        repeatMode.classList.remove("fa-volume-xmark");
-        repeatMode.classList.remove("fa-volume-low");
-        repeatMode.classList.remove("fa-phone-volume");
-        repeatMode.classList.add("fa-volume-high");
+        volumeIcon.classList.remove("fa-volume-xmark");
+        volumeIcon.classList.remove("fa-volume-low");
+        volumeIcon.classList.remove("fa-phone-volume");
+        volumeIcon.classList.add("fa-volume-high");
         audioElement.muted = false;
     }
 })
@@ -662,3 +633,5 @@ logOut.onclick = () => {
 followBtn.onclick = () => {
     window.open("https://www.instagram.com/deepak__chaudhary/");
 }
+
+
