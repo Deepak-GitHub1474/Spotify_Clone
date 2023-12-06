@@ -32,7 +32,7 @@ functionality of the popular music streaming platform Spotify.
 - RegExp.
 - Conditional styling.
 
-### Technologies Used
+### Language Used
 
 - HTML5
 - CSS3
@@ -42,6 +42,7 @@ functionality of the popular music streaming platform Spotify.
 
 - [FontAwesome](https://fontawesome.com/) for icons
 - [Cloudinary](https://cloudinary.com/) for assets
+- [deezer.com](https://deezer.com/) for songs API
 
 ### My portfolio Link 👇
 [https://developer-string-portfolio.netlify.app/home/]
