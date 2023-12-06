@@ -30,7 +30,7 @@ functionality of the popular music streaming platform Spotify.
 - User authentication.
 - Form validation.
 - RegExp.
-- conditional styling.
+- Conditional styling.
 
 ### Technologies Used
 
@@ -50,5 +50,5 @@ functionality of the popular music streaming platform Spotify.
 [https://www.linkedin.com/in/deepak-chaudhary1474/]
 
 ## Checkout Live Netlify Link 👇
-[https://spotifyclonedeveloperstring.netlify.app/signup/signup.html]
+[https://developerstringspotify.netlify.app/home]
 

@@ -188,8 +188,9 @@ header {
 
 .dropdown-inner li:hover {
     background-color: #414040;
-    width: 80%;
+    width: 97%;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .logout-line {
